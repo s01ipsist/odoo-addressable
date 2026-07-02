@@ -8,7 +8,7 @@
 Addressable Autocomplete
 ========================
 
-Add fast, accurate address autocomplete to the ``street`` field on contacts,
+Add fast, accurate address autocomplete to the street field on contacts,
 customers and vendors. As you type, Addressable suggests real, verified
 addresses and, on selection, fills in street, city, state, postcode and
 geo-coordinates for you.
@@ -18,10 +18,11 @@ Australia, New Zealand and the Nordics, built on open address data.
 
 Requirements
 ------------
-This module is a free, open-source connector. It requires an **Addressable API
-key** to work. A **free tier is available** — sign up at
-https://www.addressable.dev and paste your key into
-*Settings → General Settings → Addressable Autocomplete*.
+
+This module is a free, open-source connector. It requires an Addressable API
+key to work, and a free tier is available. Sign up at
+https://www.addressable.dev and paste your key into Settings, General Settings,
+Addressable Autocomplete.
 
 No address data is sent anywhere until you provide a key. When enabled, the
 partial address text you type is sent to the Addressable API to retrieve
