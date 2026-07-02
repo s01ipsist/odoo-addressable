@@ -28,7 +28,8 @@ class AddressableController(http.Controller):
         auth="user",
         methods=["POST"],
     )
-    def suggest(self, query=None, country_code=None, max_results=8, **kwargs):
+    def suggest(self, query=None, country_id=None, country_code=None,
+                max_results=8, **kwargs):
         query = (query or "").strip()
         if len(query) < MIN_QUERY_LENGTH:
             return {"suggestions": []}
@@ -45,7 +46,12 @@ class AddressableController(http.Controller):
         if not api_key:
             return {"error": "missing_api_key", "suggestions": []}
 
-        country_code = (country_code or default_country or "").strip().lower()
+        # Scope the search to the contact's own country when it has one, so an
+        # AU contact gets AU results without the user picking a country. Falls
+        # back to an explicit country_code, then the configured default.
+        country_code = self._resolve_country_code(
+            country_id, country_code, default_country
+        )
 
         try:
             response = requests.get(
@@ -91,6 +97,17 @@ class AddressableController(http.Controller):
 
     # ------------------------------------------------------------------
     # Helpers
+    def _resolve_country_code(self, country_id, country_code, default_country):
+        """Prefer the contact's own country, then an explicit code, then the
+        configured default. Returns a lowercase two-letter code."""
+        if country_id:
+            try:
+                country = request.env["res.country"].sudo().browse(int(country_id))
+                if country.exists() and country.code:
+                    return country.code.lower()
+            except (ValueError, TypeError):
+                pass
+        return (country_code or default_country or "nz").strip().lower()
     # ------------------------------------------------------------------
     def _normalize(self, result, country_code):
         """Map an Addressable result to res.partner field values.

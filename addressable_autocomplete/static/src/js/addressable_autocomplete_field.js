@@ -21,6 +21,15 @@ function toMany2one(pair) {
     return ODOO_MAJOR >= 19 ? { id, display_name } : [id, display_name];
 }
 
+// Read the record id from a many2one datapoint, whichever shape the running
+// series uses (17/18: [id, name] pair; 19+: { id, display_name } object).
+function many2oneId(value) {
+    if (!value) {
+        return false;
+    }
+    return value.id ?? value[0] ?? false;
+}
+
 /**
  * A drop-in replacement for the `char` widget on the `street` field.
  * As the user types, it queries the Addressable proxy controller and shows a
@@ -66,11 +75,10 @@ export class AddressableAutocompleteField extends CharField {
         this.state.loading = true;
         this.state.open = true;
 
-        // If the contact already has a country, pass its ISO code so results are
-        // scoped correctly; otherwise the server falls back to the configured
+        // If the contact already has a country, pass its id so the server can
+        // scope results to it; otherwise the server falls back to the configured
         // default country.
-        const country = this.props.record.data.country_id;
-        const countryCode = country && country[1] ? undefined : undefined;
+        const countryId = many2oneId(this.props.record.data.country_id);
 
         let result;
         try {
@@ -85,7 +93,7 @@ export class AddressableAutocompleteField extends CharField {
                 body: JSON.stringify({
                     jsonrpc: "2.0",
                     method: "call",
-                    params: { query, country_code: countryCode },
+                    params: { query, country_id: countryId },
                 }),
             });
             const payload = await response.json();

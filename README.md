@@ -74,6 +74,7 @@ LGPL-3. See [LICENSE](LICENSE).
 
 ## Status
 
-Installs cleanly and passes the e2e suite on Odoo 17 & 18. Before an Apps Store
-upload: add `static/description/icon.png`, and wire the per-contact country code
-into the widget (currently always uses the configured default country).
+Installs cleanly and passes the e2e suite on Odoo 17, 18 & 19. When a contact
+already has a country, the search is scoped to it; otherwise the configured
+default country is used. Before an Apps Store upload: add
+`static/description/icon.png`.

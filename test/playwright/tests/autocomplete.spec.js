@@ -65,3 +65,33 @@ test("short queries do not open the dropdown", async ({ page }) => {
         page.locator(".o_addressable_dropdown")
     ).toHaveCount(0);
 });
+
+test("search is scoped to the contact's existing country", async ({ page }) => {
+    await login(page);
+    const street = await openNewContact(page);
+
+    // Set Country = Australia first. The mock returns AU data only when the
+    // request carries country_code=au, so AU results prove the contact's
+    // country_id was sent and resolved server-side (without it, the default
+    // country NZ would be used and we'd get "Marua Road").
+    const countryInput = page.locator("[name='country_id'] input");
+    await countryInput.click();
+    await countryInput.fill("Australia");
+    await page
+        .locator(".o-autocomplete--dropdown-item", { hasText: "Australia" })
+        .first()
+        .click();
+    await expect(countryInput).toHaveValue("Australia");
+
+    await street.click();
+    await street.fill("12 Collins");
+
+    const item = page.locator(".o_addressable_dropdown .dropdown-item").first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText("Collins Street");
+    await item.click();
+
+    await expect(street).toHaveValue("12 Collins Street");
+    await expect(page.locator("[name='city'] input")).toHaveValue("Melbourne");
+    await expect(page.locator("[name='zip'] input")).toHaveValue("3000");
+});

@@ -38,6 +38,10 @@ The stack is torn down (`down -v`) on exit, pass or fail.
   appears → click a suggestion → asserts street/city/zip/country are populated
   (incl. `country_id` resolved to a real record).
 - **short queries do not open the dropdown** — the `< 3` char guard.
+- **search is scoped to the contact's existing country** — set Country =
+  Australia, then assert AU results come back (the mock only returns AU data when
+  the request carries `country_code=au`, proving the contact's `country_id` is
+  sent and resolved server-side).
 
 ## Adding an Odoo version
 
