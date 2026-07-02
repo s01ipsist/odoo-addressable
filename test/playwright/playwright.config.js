@@ -6,6 +6,8 @@ module.exports = defineConfig({
     timeout: 90000,
     expect: { timeout: 20000 },
     retries: 0,
+    // One Odoo instance — run serially to avoid cross-test contention.
+    workers: 1,
     reporter: [["list"], ["html", { outputFolder: "artifacts/report", open: "never" }]],
     outputDir: "artifacts/results",
     use: {

@@ -2,7 +2,8 @@
     <div class="oe_row oe_spaced">
         <h2 class="oe_slogan">Addressable Autocomplete</h2>
         <h3 class="oe_slogan">
-            Fast, accurate address autocomplete for AU, NZ &amp; the Nordics
+            Fast, accurate address autocomplete for AU, NZ, Canada,
+            the Nordics &amp; Baltics
         </h3>
         <p class="oe_mt32">
             Start typing an address on any contact, customer or vendor and pick
@@ -11,13 +12,43 @@
         </p>
         <p>
             A privacy-friendly alternative to Google Places, built on open
-            address data with first-class coverage of Australia, New Zealand and
-            the Nordics.
+            address data.
+        </p>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h3 class="oe_slogan">See it in action</h3>
+        <p class="oe_mt32 text-center">
+            <img class="img img-fluid shadow"
+                 src="screenshot-autocomplete.png"
+                 alt="Address autocomplete dropdown on a contact's Street field"/>
         </p>
     </div>
 </section>
 
 <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h3 class="oe_slogan">Features</h3>
+        <ul>
+            <li>Autocomplete directly on the contact <strong>Street</strong>
+                field — no new screens to learn.</li>
+            <li>On selection, fills <strong>street, city, state, postcode</strong>
+                and <strong>geo-coordinates</strong> automatically.</li>
+            <li><strong>Country-aware</strong>: scopes results to the contact's
+                country, or a configurable default.</li>
+            <li>First-class coverage of <strong>Australia, New Zealand, Canada,
+                the Nordics and Baltics</strong> — and more.</li>
+            <li>Your API key is stored <strong>server-side</strong> and is never
+                exposed to the browser.</li>
+            <li>Graceful fallback to manual entry when no key is configured.</li>
+            <li>Free, open source (LGPL-3). Tested on Odoo 17, 18 and 19.</li>
+        </ul>
+    </div>
+</section>
+
+<section class="oe_container">
     <div class="oe_row oe_spaced">
         <h3 class="oe_slogan">Free &amp; open source — bring your own key</h3>
         <p class="oe_mt32">
@@ -26,25 +57,35 @@
             <strong>free tier is available</strong>.
         </p>
         <ol>
-            <li>Sign up at
-                <a href="https://www.addressable.dev">addressable.dev</a>
-                and copy your API key (free tier is fine to start).</li>
+            <li>Sign up at addressable.dev and copy your API key
+                (the free tier is fine to start).</li>
             <li>In Odoo, go to
                 <em>Settings → General Settings → Addressable Autocomplete</em>
                 and paste your key.</li>
             <li>Open any contact and start typing in the Street field.</li>
         </ol>
+        <p class="oe_mt32 text-center">
+            <img class="img img-fluid shadow"
+                 src="screenshot-settings.png"
+                 alt="Addressable Autocomplete settings in General Settings"/>
+        </p>
     </div>
 </section>
 
-<section class="oe_container">
+<section class="oe_container oe_dark">
     <div class="oe_row oe_spaced">
         <h3 class="oe_slogan">Privacy &amp; data transparency</h3>
         <p class="oe_mt32">
             No data leaves your Odoo instance until you enter an API key. When
             enabled, the partial address text you type is sent to the Addressable
-            API (over HTTPS) to return matching suggestions. Your API key is
-            stored server-side and is never exposed to the browser.
+            API (over HTTPS) to return matching suggestions — nothing else is
+            collected. Your API key is stored server-side and is never exposed to
+            the browser.
+        </p>
+        <p>
+            Addressable's privacy policy and terms are published at
+            addressable.dev/pages/terms. For questions, contact
+            support@addressable.dev.
         </p>
     </div>
 </section>

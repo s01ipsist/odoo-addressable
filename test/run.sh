@@ -52,7 +52,8 @@ done
 
 echo "== run playwright =="
 set +e
-$DC run --rm playwright bash -lc "npm install --no-audit --no-fund --silent && npx playwright test"
+$DC run --rm -e CAPTURE="${CAPTURE:-}" playwright \
+  bash -lc "npm install --no-audit --no-fund --silent && npx playwright test"
 rc=$?
 set -e
 

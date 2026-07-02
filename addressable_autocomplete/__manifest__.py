@@ -35,6 +35,7 @@ suggestions.
     "author": "Addressable",
     "maintainer": "Addressable",
     "website": "https://www.addressable.dev",
+    "support": "support@addressable.dev",
     "license": "LGPL-3",
     "depends": ["base", "base_setup", "contacts"],
     "external_dependencies": {"python": ["requests"]},

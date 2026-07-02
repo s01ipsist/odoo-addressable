@@ -16,15 +16,16 @@ Store, derived from Odoo's own rules and reviewed against the current module.
 
 ## Priority gaps (do before upload)
 
+Closed 2026-07-02: **B8** (delinked description), **A6** (support email),
+**B5** (screenshots added + embedded), **B9** (feature list), **D3** (privacy
+reference). Remaining:
+
 | # | Control | Why it matters |
 | --- | --- | --- |
-| 1 | **B8** — external link in `index.html` | Odoo's allowed-links list does **not** include arbitrary sites; the `addressable.dev` link on the description page may be rejected. |
-| 2 | **A6 / G2** — support channel (R6) | Maintainers **must** provide support even for free apps. No support email is set. |
-| 3 | **B5** — screenshots | Expected metadata; strengthens listing and scoring. |
-| 4 | **A1** — module name contains company name | Guidelines say *avoid including the name of your company*; our name is the brand. Decision needed. |
-| 5 | **D3** — Data Privacy Policy link | Recommended for data-transmitting apps; pairs with the B8 fix. |
-| 6 | **B9** — explicit feature list | "Detailed list of the app's features" is required. |
-| 7 | **H1 / H3** — dev account + repo access | Needed to publish; private repos must grant `online-odoo` access. |
+| 1 | **H1 / H3** — dev account + repo access | Needed to publish; private repos must grant `online-odoo` access. External process. |
+| 2 | **A1** — module name contains company name | Guidelines say *avoid including the name of your company*; our name is the brand. Decision needed (recommend keep). |
+| 3 | **A2** — per-series version prefix | Prefix `17.0.x` / `18.0.x` / `19.0.x` on the upload branches. |
+| 4 | **G2** — support monitored | Email is set; ensure `support@addressable.dev` is actually staffed. |
 
 Everything else is Met or a routine process item.
 
@@ -39,7 +40,7 @@ Everything else is Met or a routine process item.
 | A3 | License set in manifest | ✅ | `"license": "LGPL-3"`. |
 | A4 | Dependencies complete & existing | ✅ | `base, base_setup, contacts` (all core). `requests` ships with Odoo. |
 | A5 | Summary of features | ✅ | Summary set in manifest. |
-| A6 | Support email (field optional, but R6 support is mandatory) | ❌ | No `support` key. **Action:** add `"support": "support@addressable.dev"` (or chosen address) and staff it. |
+| A6 | Support email (field optional, but R6 support is mandatory) | ✅ | `"support": "support@addressable.dev"` set in manifest. Ensure it is staffed (see G2). |
 | A7 | Author / website | ✅ | `author`/`maintainer`/`website` set. |
 | A8 | Category | ✅ | `"Productivity"`. |
 
@@ -51,11 +52,11 @@ Everything else is Met or a routine process item.
 | B2 | Rich HTML description at `static/description/index.html` | ✅ | Present. |
 | B3 | Icon at `static/description/icon.png` | ✅ | 512×512 transparent PNG. |
 | B4 | Cover image via manifest `images` | ✅ | `banner.png` (1200×600), referenced by `images`. |
-| B5 | Screenshots of functionality | ❌ | None yet. **Action:** capture the widget dropdown + settings page (png/jpeg) and embed in `index.html` / add as screenshots. Can be pulled from the Playwright run. |
+| B5 | Screenshots of functionality | ✅ | `screenshot-autocomplete.png` + `screenshot-settings.png` generated from the Playwright run (`test/capture-screenshots.sh`) and embedded in `index.html`. |
 | B6 | Description images: png/gif/jpeg only | ✅ | None embedded; when adding B5, keep to allowed formats. |
 | B7 | No JS injection, no static tags/widgets/modals, Bootstrap classes only | ✅ | `index.html` uses `oe_*` classes, no scripts. |
-| B8 | No links to other app stores/external platforms; only allowed links (static/description, YouTube canonical, MS Teams, `mailto:`, `skype:`) | ❌ | `index.html` links to `https://www.addressable.dev`, which is **not** on the allowed list. **Action:** remove the hyperlink (keep the text "addressable.dev"), or replace with a `mailto:`. The manifest `website` field is the sanctioned place for the URL. |
-| B9 | Accurate, non-misleading info + **detailed feature list** | 🟡 | Copy is accurate but has no explicit feature list. **Action:** add a bulleted feature list (autocomplete on Street; fills city/state/zip/geo; country-scoped; server-side key; AU/NZ/CA/Nordics/Baltics). |
+| B8 | No links to other app stores/external platforms; only allowed links (static/description, YouTube canonical, MS Teams, `mailto:`, `skype:`) | ✅ | Hyperlink removed from `index.html`; `addressable.dev` now plain text. URL lives in the manifest `website` field. |
+| B9 | Accurate, non-misleading info + **detailed feature list** | ✅ | `index.html` now has a bulleted Features section (autocomplete on Street; fills city/state/zip/geo; country-scoped; server-side key; AU/NZ/CA/Nordics/Baltics; graceful fallback). |
 | B10 | Technical doc at `doc/index.rst` (optional, auto-loaded) | ⚙️ | Optional. Consider adding a short setup doc. |
 
 ## C. Pricing & commercial
@@ -73,7 +74,7 @@ Everything else is Met or a routine process item.
 | --- | --- | --- | --- |
 | D1 | Explicitly disclose data collected **and** external transmission, in manifest **and** store page (R4) | ✅ | Manifest description and `index.html` both state that typed address text is sent to the Addressable API over HTTPS, and nothing is sent without a key. |
 | D2 | User opt-in before transmitting data | ✅* | Nothing is transmitted until an admin enters an API key — an explicit configuration step = opt-in. *Strengthen by wording the settings help as an explicit consent statement. |
-| D3 | Link to a Data Privacy Policy (recommended) | ❌ | No privacy-policy reference. **Action:** cite Addressable's privacy/terms in the description text (respecting B8 — plain text or `mailto:`), and/or in settings help. |
+| D3 | Link to a Data Privacy Policy (recommended) | ✅ | `index.html` references Addressable's privacy policy & terms (addressable.dev/pages/terms) and `support@addressable.dev` as plain text (respecting B8). |
 | D4 | Customer owns their data; no vendor lock-in | ✅ | Module stores nothing of its own; addresses live in the customer's Odoo. Uninstalling leaves data intact. |
 | D5 | App must not require an **activation key** to execute | ✅ | The module runs without any key and degrades to manual entry; the Addressable API key unlocks the **external service**, not the module code (same pattern as Google Places connectors). Distinct from a code-activation lock. |
 
@@ -103,7 +104,7 @@ Everything else is Met or a routine process item.
 | ID | Control | Status | Evidence / Gap & action |
 | --- | --- | --- | --- |
 | G1 | Per-series branches; version prefixed per series (13.0+ sold/served separately) | ⚙️ | Documented in manifest & `test/README.md`. **Action:** cut `17.0`/`18.0`/`19.0` branches with prefixed versions for upload. |
-| G2 | Provide customer support (R6) | ❌ | No published support channel. **Action:** add support email (A6) + a lightweight support process; link from listing. |
+| G2 | Provide customer support (R6) | 🟡 | Support email set (A6) and shown on the description page. **Action:** ensure `support@addressable.dev` is monitored/staffed. |
 | G3 | Increase version on schema changes | ⚙️ | No persisted models today (config params only), so low risk. Follow semver on future model changes. |
 | G4 | Maintain across new Odoo releases | ⚙️ | Multi-version harness + CI matrix. **Action:** add each new series to `.github/workflows/e2e.yml` and run before publishing. |
 
@@ -127,13 +128,15 @@ Everything else is Met or a routine process item.
 
 ## Summary
 
-Of 48 controls: **32 Met ✅ · 7 Gap ❌ · 3 Partial 🟡 · 4 Process ⚙️ · 2 N/A**.
+Of 48 controls (after the 2026-07-02 fixes): **37 Met ✅ · 2 Gap ❌ · 3 Partial 🟡 · 4 Process ⚙️ · 2 N/A**.
 
-- **Met:** core technical, security, IP, data-transparency, and listing-asset
-  requirements are satisfied.
-- **Gaps to close before upload (7):** B8 (description link), A6 & G2 (support),
-  B5 (screenshots), D3 (privacy link), H1 & H3 (account + repo).
-- **Partial (decisions/tweaks):** A1 (name), A2 (version prefix), B9 (feature list).
+- **Met:** core technical, security, IP, data-transparency, and all listing
+  content/assets (description, feature list, icon, banner, screenshots,
+  privacy reference, support email) are satisfied.
+- **Gaps (external process, 2):** H1 (hosted repo + `online-odoo` access) and
+  H3 (registered developer account).
+- **Partial (decisions/tweaks):** A1 (keep vs rename brand name), A2 (per-series
+  version prefix at upload), G2 (staff the support inbox).
 - **Process items:** versioning per series (G1), release maintenance (G4),
   optional technical doc (B10).
 
