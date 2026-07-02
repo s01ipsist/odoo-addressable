@@ -47,10 +47,13 @@ the browser** — the widget only ever talks to the in-Odoo proxy controller.
 
 ## Version support
 
-End-to-end tested on **Odoo 17.0 and 18.0** (see [`test/`](test/)). The widget
-calls its JSON controller with `fetch` (not the version-specific `rpc` service)
-and the manifest uses a bare version that Odoo auto-prefixes per series, so a
-single tree installs and runs across series.
+End-to-end tested on **Odoo 17.0, 18.0 and 19.0** — the on-premise series under
+[standard support](https://www.odoo.com/documentation/19.0/administration/standard_extended_support.html)
+(see [`test/`](test/)). The widget calls its JSON controller with `fetch` (not
+the version-specific `rpc` service), detects the running series to emit the
+correct many2one value shape (Odoo 19 switched from `[id, name]` pairs to
+`{ id, display_name }` objects), and the manifest uses a bare version that Odoo
+auto-prefixes per series — so a single tree installs and runs across series.
 
 For the Odoo Apps Store, cut a per-series branch and prefix the manifest version
 there (`17.0.1.0.0`, `18.0.1.0.0`), which is how the store organises modules.

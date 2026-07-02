@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         # Add a version here to test another Odoo series. Nothing else changes.
-        odoo-version: ["17", "18"]
+        odoo-version: ["17", "18", "19"]
     name: Odoo ${{ matrix.odoo-version }}
     steps:
       - uses: actions/checkout@v4

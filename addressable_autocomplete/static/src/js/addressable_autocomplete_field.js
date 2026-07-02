@@ -2,10 +2,24 @@
 
 import { registry } from "@web/core/registry";
 import { CharField, charField } from "@web/views/fields/char/char_field";
+import { session } from "@web/session";
 import { useState } from "@odoo/owl";
 
 const DEBOUNCE_MS = 300;
 const MIN_QUERY_LENGTH = 3;
+
+// Odoo 19 changed the many2one value shape for record.update() from a
+// [id, display_name] pair to a { id, display_name } object. Detect the running
+// series and emit the right shape.
+const ODOO_MAJOR = (session.server_version_info || [])[0] || 0;
+
+function toMany2one(pair) {
+    if (!pair) {
+        return false;
+    }
+    const [id, display_name] = pair;
+    return ODOO_MAJOR >= 19 ? { id, display_name } : [id, display_name];
+}
 
 /**
  * A drop-in replacement for the `char` widget on the `street` field.
@@ -90,11 +104,14 @@ export class AddressableAutocompleteField extends CharField {
 
     async onSelectSuggestion(suggestion) {
         clearTimeout(this._blurHandle);
-        // Strip out empty relational values so we don't clobber existing data
-        // with `false` when Addressable couldn't resolve a state/country.
+        // Convert relational values to the per-version many2one shape. Strip
+        // empty ones so we don't clobber existing data with `false` when
+        // Addressable couldn't resolve a state/country.
         const values = { ...suggestion.values };
         for (const key of ["state_id", "country_id"]) {
-            if (!values[key]) {
+            if (values[key]) {
+                values[key] = toMany2one(values[key]);
+            } else {
                 delete values[key];
             }
         }

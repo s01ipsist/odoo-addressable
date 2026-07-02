@@ -9,7 +9,10 @@ Parametrized by Odoo version so the same suite runs against any series.
 cd test
 ./run.sh          # Odoo 17 (default)
 ./run.sh 18       # Odoo 18
+./run.sh 19       # Odoo 19
 ```
+
+Covers the on-premise series under standard support (17, 18, 19).
 
 Requires Docker (with Compose v2). No host Node or Python needed — everything
 runs in containers.
