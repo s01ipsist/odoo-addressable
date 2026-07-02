@@ -46,6 +46,8 @@ test("street autocomplete fills the address fields", async ({ page }) => {
 
     // Selecting a suggestion fills the related fields.
     await expect(street).toHaveValue("71B Marua Road");
+    // Suburb (locality) is kept in street2, distinct from the city.
+    await expect(page.locator("[name='street2'] input")).toHaveValue("Ellerslie");
     await expect(page.locator("[name='city'] input")).toHaveValue("Auckland");
     await expect(page.locator("[name='zip'] input")).toHaveValue("1051");
     await expect(page.locator("[name='country_id'] input")).toHaveValue(
@@ -92,6 +94,8 @@ test("search is scoped to the contact's existing country", async ({ page }) => {
     await item.click();
 
     await expect(street).toHaveValue("12 Collins Street");
+    // AU carries the unit in street2; locality is the city (no separate suburb).
+    await expect(page.locator("[name='street2'] input")).toHaveValue("Unit 5");
     await expect(page.locator("[name='city'] input")).toHaveValue("Melbourne");
     await expect(page.locator("[name='zip'] input")).toHaveValue("3000");
 });

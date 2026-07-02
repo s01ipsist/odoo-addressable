@@ -125,12 +125,19 @@ class AddressableController(http.Controller):
         street_name = val("street")
         street = " ".join(p for p in [street_number, street_name] if p).strip()
 
-        # AU carries sub-address detail in these; fall back to empty elsewhere.
-        street2 = val("unit_details") or val("building_name")
-
-        # NZ distinguishes locality (suburb) from city; other countries only
-        # populate locality. Prefer the most city-like value available.
+        # NZ has both `locality` (suburb) and `city` (town/city); countries like
+        # AU only have `locality`, which IS the town. So the town goes in `city`,
+        # and when a distinct suburb exists we keep it in street2 rather than
+        # dropping it (Odoo has no suburb field). Setting city=suburb instead
+        # would lose the real town for cities whose region differs (e.g. suburb
+        # Chartwell / city Hamilton / region Waikato).
         city = val("city") or val("locality")
+        suburb = val("locality") if (val("city") and val("locality") != val("city")) else ""
+
+        # street2 = sub-address detail (AU unit/building) and/or the suburb.
+        street2 = ", ".join(
+            p for p in [val("unit_details"), val("building_name"), suburb] if p
+        )
 
         region = val("region")
         zip_code = val("postcode")
