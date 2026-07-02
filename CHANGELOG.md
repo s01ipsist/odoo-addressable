@@ -18,7 +18,9 @@ with the Odoo series. See [docs/releasing.md](docs/releasing.md).
 ### Changed
 - Hardened the lookup: the in-flight request is cancelled and stale responses
   are ignored (race-safe, so a slow earlier reply can't overwrite a newer one),
-  results are cached per query+country, and queries are trimmed before searching.
+  and results are cached per query+country. The query is sent as typed —
+  trailing whitespace is preserved because it is significant to a look-ahead
+  search.
 
 ## [1.1.1] - 2026-07-03
 

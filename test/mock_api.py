@@ -9,6 +9,7 @@ from urllib.parse import urlparse, parse_qs
 
 # Shapes mirror the real API, incl. lat/lon returned as STRINGS and a meshblock.
 DATA = {
+    # Real multi-result response for a "71B Marua" NZ lookup.
     "nz": [
         {
             "street_number": "71B", "street": "Marua Road",
@@ -16,7 +17,35 @@ DATA = {
             "postcode": "1051", "meshblock": "4006113",
             "lon": "174.821423", "lat": "-36.891356",
             "formatted": "71B Marua Road, Ellerslie, Auckland",
-        }
+        },
+        {
+            "street_number": "71", "street": "Marua Road",
+            "locality": "Hikurangi", "city": "Hikurangi", "region": "Northland",
+            "postcode": "0114", "meshblock": "0064501",
+            "lon": "174.29641", "lat": "-35.584355",
+            "formatted": "71 Marua Road, Hikurangi",
+        },
+        {
+            "street_number": "71C", "street": "Marua Road",
+            "locality": "Ellerslie", "city": "Auckland", "region": "Auckland",
+            "postcode": "1051", "meshblock": "4006113",
+            "lon": "174.821481", "lat": "-36.891373",
+            "formatted": "71C Marua Road, Ellerslie, Auckland",
+        },
+        {
+            "street_number": "71A", "street": "Marua Road",
+            "locality": "Ellerslie", "city": "Auckland", "region": "Auckland",
+            "postcode": "1051", "meshblock": "4006113",
+            "lon": "174.821362", "lat": "-36.89134",
+            "formatted": "71A Marua Road, Ellerslie, Auckland",
+        },
+        {
+            "street_number": "71", "street": "Mt Marua Way",
+            "locality": "Timberlea", "city": "Upper Hutt", "region": "Wellington",
+            "postcode": "5018", "meshblock": "4003063",
+            "lon": "175.123965", "lat": "-41.098204",
+            "formatted": "71 Mt Marua Way, Timberlea, Upper Hutt",
+        },
     ],
     "au": [
         {

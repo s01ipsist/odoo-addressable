@@ -96,6 +96,29 @@ test("keyboard navigation selects a suggestion", async ({ page }) => {
     await expect(page.locator(".o_addressable_dropdown")).toHaveCount(0);
 });
 
+test("shows multiple results and can select a later one", async ({ page }) => {
+    await login(page);
+    const street = await openNewContact(page);
+
+    await street.click();
+    await street.fill("71B Marua");
+    const items = page.locator(".o_addressable_dropdown .dropdown-item");
+    await expect(items.first()).toBeVisible();
+    expect(await items.count()).toBeGreaterThan(1);
+
+    // Select the second result (Hikurangi, a different town/region) via keyboard.
+    await street.press("ArrowDown");
+    await street.press("ArrowDown");
+    await expect(
+        page.locator(".o_addressable_dropdown .dropdown-item.active")
+    ).toContainText("Hikurangi");
+    await street.press("Enter");
+
+    await expect(street).toHaveValue("71 Marua Road");
+    await expect(page.locator("[name='city'] input")).toHaveValue("Hikurangi");
+    await expect(page.locator("[name='zip'] input")).toHaveValue("0114");
+});
+
 test("Escape closes the dropdown", async ({ page }) => {
     await login(page);
     const street = await openNewContact(page);

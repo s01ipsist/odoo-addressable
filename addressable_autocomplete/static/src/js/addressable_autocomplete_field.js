@@ -42,7 +42,8 @@ function many2oneId(value) {
  *
  * Autocomplete best practices implemented here:
  *  - debounce + minimum query length (avoid noisy, costly requests)
- *  - trim input and skip repeat queries; cache results per query+country
+ *  - send the query as typed (trailing whitespace matters for look-ahead);
+ *    cache results per query+country to skip duplicate network calls
  *  - race-safety: cancel the in-flight request and ignore stale responses so a
  *    slow earlier reply can never overwrite a newer one
  *  - keyboard navigation (Up/Down/Enter/Escape) and ARIA combobox roles
@@ -81,14 +82,18 @@ export class AddressableAutocompleteField extends CharField {
 
     _scheduleSearch(rawValue) {
         clearTimeout(this._debounceHandle);
-        const query = (rawValue || "").trim();
-        if (query.length < MIN_QUERY_LENGTH) {
+        const value = rawValue || "";
+        // Gate on meaningful length, but send the query AS TYPED. Trailing
+        // whitespace is significant to a look-ahead search: it signals the end
+        // of a token and can shift results to the next address level, so we must
+        // not trim it away before querying.
+        if (value.trim().length < MIN_QUERY_LENGTH) {
             this._cancelInFlight();
             this._reset();
             return;
         }
         this._debounceHandle = setTimeout(
-            () => this._fetchSuggestions(query),
+            () => this._fetchSuggestions(value),
             DEBOUNCE_MS
         );
     }
