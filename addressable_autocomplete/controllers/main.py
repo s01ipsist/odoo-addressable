@@ -109,14 +109,29 @@ class AddressableController(http.Controller):
                 pass
         return (country_code or default_country or "nz").strip().lower()
     # ------------------------------------------------------------------
+    # Administrative-area fields returned by the API, most-significant first.
+    # Used to fill Odoo's single state_id; whichever ones don't resolve to a
+    # res.country.state are preserved in street2 rather than dropped. Add a new
+    # key here if the API introduces another admin-level field for a country.
+    ADMIN_KEYS = ("region", "district", "municipality")
+
     def _normalize(self, result, country_code):
         """Map an Addressable result to res.partner field values.
 
-        Addressable returns per-country display fields, e.g.
-        NZ: street_number, street, locality, city, region, postcode, lon, lat,
-            formatted
-        AU: building_name, unit_details, street_number, street, locality,
-            region, postcode, lon, lat, formatted
+        The API returns different field sets per country (all a subset of):
+          street_number, street, unit_details, building_name, locality, city,
+          region, district, municipality, postcode, meshblock, lon, lat,
+          formatted
+        Mapping is field-name driven, not country-driven, so a new country works
+        with no change as long as it reuses these field names.
+
+          street   <- street_number + street
+          street2  <- unit_details + building_name + suburb + leftover admin
+          city     <- city, else locality (the town)
+          suburb   <- locality when a distinct `city` field is also present
+          state_id <- first of region/district/municipality that resolves
+          zip      <- postcode
+          geo      <- lat / lon    (meshblock has no Odoo field; ignored)
         """
         def val(key):
             return (result.get(key) or "").strip() if result.get(key) else ""
@@ -125,43 +140,51 @@ class AddressableController(http.Controller):
         street_name = val("street")
         street = " ".join(p for p in [street_number, street_name] if p).strip()
 
-        # NZ has both `locality` (suburb) and `city` (town/city); countries like
-        # AU only have `locality`, which IS the town. So the town goes in `city`,
-        # and when a distinct suburb exists we keep it in street2 rather than
-        # dropping it (Odoo has no suburb field). Setting city=suburb instead
-        # would lose the real town for cities whose region differs (e.g. suburb
-        # Chartwell / city Hamilton / region Waikato).
+        # NZ/US have both `locality` (suburb) and `city` (town); AU, CA and the
+        # Nordics/Baltics only have `locality`, which IS the town. So the town
+        # goes in `city`, and a distinct suburb is kept in street2 (Odoo has no
+        # suburb field). Using city=suburb would lose the real town where it
+        # differs from the region (e.g. suburb Chartwell / city Hamilton).
         city = val("city") or val("locality")
         suburb = val("locality") if (val("city") and val("locality") != val("city")) else ""
 
-        # street2 = sub-address detail (AU unit/building) and/or the suburb.
-        street2 = ", ".join(
-            p for p in [val("unit_details"), val("building_name"), suburb] if p
-        )
-
-        region = val("region")
         zip_code = val("postcode")
-        formatted = val("formatted") or ", ".join(
-            p for p in [street, city, region, zip_code] if p
-        )
 
         country = request.env["res.country"].sudo().search(
             [("code", "=", country_code.upper())], limit=1
         )
 
+        # Resolve state_id from the most significant admin field that maps to a
+        # res.country.state; keep the rest for street2 so nothing is lost.
+        admin_values = [val(k) for k in self.ADMIN_KEYS if val(k)]
         state_pair = False
-        if country and region:
-            state = request.env["res.country.state"].sudo().search(
-                [
-                    ("country_id", "=", country.id),
-                    "|",
-                    ("name", "=ilike", region),
-                    ("code", "=ilike", region),
-                ],
-                limit=1,
-            )
-            if state:
-                state_pair = [state.id, state.display_name]
+        used_admin = None
+        if country:
+            for admin in admin_values:
+                state = request.env["res.country.state"].sudo().search(
+                    [
+                        ("country_id", "=", country.id),
+                        "|",
+                        ("name", "=ilike", admin),
+                        ("code", "=ilike", admin),
+                    ],
+                    limit=1,
+                )
+                if state:
+                    state_pair = [state.id, state.display_name]
+                    used_admin = admin
+                    break
+        leftover_admin = [a for a in admin_values if a != used_admin]
+
+        # street2 = sub-address detail (AU unit/building), suburb, and any admin
+        # fields not consumed by state_id.
+        street2 = ", ".join(
+            p for p in [val("unit_details"), val("building_name"), suburb, *leftover_admin] if p
+        )
+
+        formatted = val("formatted") or ", ".join(
+            p for p in [street, city, *admin_values, zip_code] if p
+        )
 
         values = {
             "street": street,

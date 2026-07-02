@@ -5,8 +5,8 @@
     # When publishing to the Apps Store, cut a per-series branch and prefix the
     # version there (e.g. 17.0.1.0.0, 18.0.1.0.0).
     "version": "1.0.0",
-    "summary": "Address autocomplete & verification for AU, NZ and the Nordics, "
-               "powered by Addressable (addressable.dev)",
+    "summary": "Address autocomplete & verification for Australia, New Zealand, "
+               "Canada, the Nordics & Baltics, powered by Addressable",
     "description": """
 Addressable Autocomplete
 ========================

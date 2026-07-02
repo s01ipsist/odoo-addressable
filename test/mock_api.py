@@ -25,6 +25,16 @@ DATA = {
             "formatted": "5/12 Collins Street, Melbourne VIC 3000",
         }
     ],
+    # Nordic/Baltic shape: locality (town) + district + municipality, no city.
+    "se": [
+        {
+            "street_number": "12", "street": "Storgatan",
+            "locality": "Stockholm", "postcode": "111 51",
+            "district": "Stockholms län", "municipality": "Stockholms kommun",
+            "lat": 59.33, "lon": 18.06,
+            "formatted": "Storgatan 12, 111 51 Stockholm",
+        }
+    ],
 }
 
 

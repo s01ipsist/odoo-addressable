@@ -2,8 +2,12 @@
 
 Free, open-source Odoo modules that bring [Addressable](https://www.addressable.dev)
 address autocomplete and verification to Odoo. A privacy-friendly alternative to
-Google Places, with first-class coverage of Australia, New Zealand and the
-Nordics, built on open address data.
+Google Places, with first-class coverage of Australia, New Zealand, Canada and
+the Nordics & Baltics, built on open address data.
+
+Coverage is field-driven and country-agnostic — see
+[docs/country-mapping.md](docs/country-mapping.md) for the per-country field
+mapping and what changes (usually nothing) when Addressable adds a country.
 
 > **An Addressable API key is required.** A **free tier** is available — sign up
 > at [addressable.dev](https://www.addressable.dev). The modules here are the

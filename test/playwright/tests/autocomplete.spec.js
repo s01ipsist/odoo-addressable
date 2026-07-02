@@ -99,3 +99,30 @@ test("search is scoped to the contact's existing country", async ({ page }) => {
     await expect(page.locator("[name='city'] input")).toHaveValue("Melbourne");
     await expect(page.locator("[name='zip'] input")).toHaveValue("3000");
 });
+
+test("Nordic admin fields (municipality/district) are not dropped", async ({ page }) => {
+    await login(page);
+    const street = await openNewContact(page);
+
+    const countryInput = page.locator("[name='country_id'] input");
+    await countryInput.click();
+    await countryInput.fill("Sweden");
+    await page
+        .locator(".o-autocomplete--dropdown-item", { hasText: "Sweden" })
+        .first()
+        .click();
+    await expect(countryInput).toHaveValue("Sweden");
+
+    await street.click();
+    await street.fill("12 Storgatan");
+    const item = page.locator(".o_addressable_dropdown .dropdown-item").first();
+    await expect(item).toBeVisible();
+    await item.click();
+
+    await expect(street).toHaveValue("12 Storgatan");
+    // locality is the town; municipality is preserved in street2 (not dropped)
+    // whether or not Odoo has a matching res.country.state for the district.
+    await expect(page.locator("[name='city'] input")).toHaveValue("Stockholm");
+    await expect(page.locator("[name='zip'] input")).toHaveValue("111 51");
+    await expect(page.locator("[name='street2'] input")).toHaveValue(/kommun/);
+});
