@@ -48,7 +48,3 @@ with the Odoo series. See [docs/releasing.md](docs/releasing.md).
   to the browser.
 - Settings for API key, API base URL, and default country code.
 - Support for Odoo 17.0, 18.0 and 19.0 from a single codebase.
-
-[Unreleased]: https://github.com/s01ipsist/odoo-addressable/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/s01ipsist/odoo-addressable/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/s01ipsist/odoo-addressable/releases/tag/v1.0.0
