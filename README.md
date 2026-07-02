@@ -72,6 +72,10 @@ Dockerized Playwright suite that installs the module, points it at a mock API,
 and drives the real web client. See [`test/README.md`](test/README.md). CI runs
 the same suite across an Odoo-version matrix ([`.github/workflows/e2e.yml`](.github/workflows/e2e.yml)).
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) (Keep a Changelog format).
+
 ## License
 
 LGPL-3. See [LICENSE](LICENSE).
