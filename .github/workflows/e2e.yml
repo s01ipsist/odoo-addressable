@@ -1,10 +1,10 @@
 name: e2e
 
 on:
-  # Only master + PRs — the per-series branches are byte-identical to master
+  # Only main + PRs — the per-series branches are byte-identical to main
   # except the manifest version, so testing them would be redundant.
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
 
 jobs:

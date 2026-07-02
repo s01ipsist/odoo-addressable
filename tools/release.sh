@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
-# Regenerate the per-series Apps Store branches from master.
+# Regenerate the per-series Apps Store branches from main.
 #
 # The module is a single codebase that runs on every supported Odoo series
 # (differences are handled at runtime). The ONLY per-series difference is the
 # manifest `version`, which Odoo requires to be prefixed with the series
-# (17.0.x, 18.0.x, …). So each series branch is just:  master + version bump.
+# (17.0.x, 18.0.x, …). So each series branch is just:  main + version bump.
 #
 # Branches are DERIVED — never commit to them directly; they are reset and
-# force-pushed from master. Develop on master only.
+# force-pushed from main. Develop on main only.
 #
 # Usage:
 #   tools/release.sh            # update local series branches (no push)
@@ -41,7 +41,7 @@ for s in "${SERIES[@]}"; do
     full="${s}.${BASE}"                       # e.g. 17.0.1.0.0
     git switch -q -C "$s" "$BASE_SHA"
     sed -i -E "s/(\"version\"[[:space:]]*:[[:space:]]*\")[^\"]*(\")/\1${full}\2/" "$MANIFEST"
-    git commit -aqm "Release ${full} (generated from master ${BASE_SHA:0:7})"
+    git commit -aqm "Release ${full} (generated from main ${BASE_SHA:0:7})"
     echo "  ${s}  ->  ${full}"
 done
 
