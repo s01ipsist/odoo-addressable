@@ -16,6 +16,24 @@
             >
                 <attribute name="widget">addressable_autocomplete</attribute>
             </xpath>
+            <!--
+                partner_latitude / partner_longitude are Float fields on
+                res.partner (in `base`). They must be present in the view for the
+                widget's record.update() to persist them. Read-only, and shown
+                only once populated so empty contacts stay uncluttered.
+            -->
+            <xpath expr="//field[@name='country_id'][1]" position="after">
+                <field
+                    name="partner_latitude"
+                    readonly="1"
+                    invisible="partner_latitude == 0.0 and partner_longitude == 0.0"
+                />
+                <field
+                    name="partner_longitude"
+                    readonly="1"
+                    invisible="partner_latitude == 0.0 and partner_longitude == 0.0"
+                />
+            </xpath>
         </field>
     </record>
 </odoo>
