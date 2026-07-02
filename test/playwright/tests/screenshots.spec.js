@@ -4,7 +4,7 @@
 // artifacts/screenshots/ and is copied into static/description/ by the wrapper.
 // Two separate tests so each starts from a fresh page (the dirty new-contact
 // form otherwise blocks navigation to Settings via the unsaved-changes guard).
-const { test } = require("@playwright/test");
+const { test, expect } = require("@playwright/test");
 
 test.use({ viewport: { width: 1400, height: 900 } });
 
@@ -37,6 +37,27 @@ test("screenshot: autocomplete dropdown", async ({ page }) => {
         .waitFor({ state: "visible" });
     await page.waitForTimeout(300);
     await page.screenshot({ path: "artifacts/screenshots/autocomplete.png" });
+});
+
+test("screenshot: completed form", async ({ page }) => {
+    await page.goto("/web#action=contacts.action_contacts");
+    await page.waitForSelector(".o_control_panel", { timeout: 30000 });
+    await page
+        .getByRole("button", { name: "New", exact: true })
+        .and(page.locator(":visible"))
+        .first()
+        .click();
+    const street = page.locator(".o_addressable_autocomplete input");
+    await street.waitFor({ state: "visible", timeout: 30000 });
+    await street.click();
+    await street.fill("71B Marua");
+    await page.locator(".o_addressable_dropdown .dropdown-item").first().click();
+    // Wait for the address block to be populated before capturing.
+    await expect(page.locator("[name='country_id'] input")).toHaveValue(
+        "New Zealand"
+    );
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: "artifacts/screenshots/completed.png" });
 });
 
 test("screenshot: settings block", async ({ page }) => {

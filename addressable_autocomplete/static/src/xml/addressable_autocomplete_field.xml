@@ -35,7 +35,7 @@
                     t-as="suggestion"
                     t-key="suggestion_index"
                     href="#"
-                    class="dropdown-item text-truncate"
+                    class="dropdown-item"
                     t-on-mousedown.prevent="() => this.onSelectSuggestion(suggestion)"
                 >
                     <t t-esc="suggestion.label" />

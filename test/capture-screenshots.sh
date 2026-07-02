@@ -14,7 +14,9 @@ CAPTURE=1 ./run.sh "${1:-17}"
 SRC=playwright/artifacts/screenshots
 DEST=../addressable_autocomplete/static/description
 cp "$SRC/autocomplete.png" "$DEST/screenshot-autocomplete.png"
+cp "$SRC/completed.png"    "$DEST/screenshot-completed.png"
 cp "$SRC/settings.png"     "$DEST/screenshot-settings.png"
 echo "Copied screenshots into $DEST:"
 echo "  screenshot-autocomplete.png"
+echo "  screenshot-completed.png"
 echo "  screenshot-settings.png"

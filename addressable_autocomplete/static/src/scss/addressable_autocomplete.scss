@@ -4,8 +4,14 @@
         overflow-y: auto;
         z-index: 1051; // above form sheet / modals
 
+        // The Street field is narrow; let the dropdown grow wider than it so
+        // full addresses are readable, and wrap (not clip) very long ones.
+        min-width: 28rem;
+        max-width: 42rem;
+
         .dropdown-item {
             cursor: pointer;
+            white-space: normal;
         }
     }
 }
