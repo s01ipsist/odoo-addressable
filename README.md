@@ -72,9 +72,14 @@ the same suite across an Odoo-version matrix ([`.github/workflows/e2e.yml`](.git
 
 LGPL-3. See [LICENSE](LICENSE).
 
+## Listing assets
+
+The icon and banner are generated from the brand SVG via
+`tools/gen-listing-assets.sh`. See [docs/listing-assets.md](docs/listing-assets.md)
+for the exact recipe and how to restyle them.
+
 ## Status
 
 Installs cleanly and passes the e2e suite on Odoo 17, 18 & 19. When a contact
 already has a country, the search is scoped to it; otherwise the configured
-default country is used. Before an Apps Store upload: add
-`static/description/icon.png`.
+default country is used. Listing icon and banner are in place.
