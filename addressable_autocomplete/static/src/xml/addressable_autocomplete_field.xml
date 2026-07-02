@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="addressable_autocomplete.AutocompleteField">
+        <div class="o_addressable_autocomplete position-relative">
+            <input
+                type="text"
+                class="o_input w-100"
+                t-att-id="props.id"
+                t-att-value="value"
+                t-att-placeholder="props.placeholder || 'Start typing an address…'"
+                t-att-readonly="props.readonly"
+                autocomplete="off"
+                t-on-input="onInput"
+                t-on-blur="onBlur"
+            />
+            <div
+                t-if="state.open"
+                class="o_addressable_dropdown dropdown-menu show w-100"
+            >
+                <span
+                    t-if="state.loading"
+                    class="dropdown-item-text text-muted"
+                >
+                    Searching…
+                </span>
+                <span
+                    t-if="!state.loading and !state.suggestions.length"
+                    class="dropdown-item-text text-muted"
+                >
+                    No matches
+                </span>
+                <a
+                    t-foreach="state.suggestions"
+                    t-as="suggestion"
+                    t-key="suggestion_index"
+                    href="#"
+                    class="dropdown-item text-truncate"
+                    t-on-mousedown.prevent="() => this.onSelectSuggestion(suggestion)"
+                >
+                    <t t-esc="suggestion.label" />
+                </a>
+            </div>
+        </div>
+    </t>
+
+</templates>

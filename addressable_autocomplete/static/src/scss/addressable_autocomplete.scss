@@ -1,0 +1,11 @@
+.o_addressable_autocomplete {
+    .o_addressable_dropdown {
+        max-height: 18rem;
+        overflow-y: auto;
+        z-index: 1051; // above form sheet / modals
+
+        .dropdown-item {
+            cursor: pointer;
+        }
+    }
+}
