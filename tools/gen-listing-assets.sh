@@ -30,11 +30,15 @@ FONT_REG="NimbusSans-Regular"
 
 mkdir -p "$DESC"
 
-# --- icon: 512x512, logo centred on transparent, ~32px padding --------------
+# --- icon: 512x512, logo centred on a solid white tile, ~32px padding -------
 # rsvg -w 448 scales proportionally (SVG is ~1.02:1), leaving padding on 512.
+# Use an OPAQUE white background (not transparent): a transparent grayscale+alpha
+# PNG renders as a black box in viewers that flatten alpha onto black (as the
+# Odoo Apps Store did). -flatten/-alpha off/-type TrueColor => opaque RGB.
 rsvg-convert -w 448 "$SVG" -o /tmp/a_icon.png
-magick /tmp/a_icon.png -background none -gravity center -extent 512x512 \
-  -depth 8 -strip "$DESC/icon.png"
+magick /tmp/a_icon.png -background white -gravity center -extent 512x512 \
+  -flatten -alpha off -colorspace sRGB -type TrueColor -depth 8 -strip \
+  "$DESC/icon.png"
 
 # --- banner: 1200x600, mark left + text block right + accent stripe ---------
 # Mark rendered to 380px tall, placed at (90,110) so it's vertically centred.
