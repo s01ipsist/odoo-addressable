@@ -1,0 +1,29 @@
+name: e2e
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Add a version here to test another Odoo series. Nothing else changes.
+        odoo-version: ["17", "18"]
+    name: Odoo ${{ matrix.odoo-version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run end-to-end suite
+        working-directory: test
+        run: ./run.sh ${{ matrix.odoo-version }}
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-odoo-${{ matrix.odoo-version }}
+          path: test/playwright/artifacts
+          if-no-files-found: ignore

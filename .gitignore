@@ -3,3 +3,6 @@ __pycache__/
 *.pyo
 .DS_Store
 *.swp
+node_modules/
+test/playwright/artifacts/
+test/playwright/package-lock.json

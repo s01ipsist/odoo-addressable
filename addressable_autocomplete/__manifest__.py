@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Addressable Autocomplete",  # <= 25 chars (Odoo Apps Store rule)
-    "version": "17.0.1.0.0",
+    # Bare x.y.z so Odoo auto-prefixes the running series (installs on 17, 18, …).
+    # When publishing to the Apps Store, cut a per-series branch and prefix the
+    # version there (e.g. 17.0.1.0.0, 18.0.1.0.0).
+    "version": "1.0.0",
     "summary": "Address autocomplete & verification for AU, NZ and the Nordics, "
                "powered by Addressable (addressable.dev)",
     "description": """

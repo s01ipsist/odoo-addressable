@@ -1,0 +1,54 @@
+# End-to-end test stack. Parametrized by ODOO_VERSION so the same harness runs
+# against any Odoo series (17, 18, …):  ODOO_VERSION=18 ./run.sh
+name: addressable-e2e
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  # Mock of the Addressable API so tests never hit the real service.
+  mock:
+    image: python:3.12-slim
+    volumes:
+      - ./mock_api.py:/mock_api.py:ro
+    command: python /mock_api.py
+
+  odoo:
+    image: odoo:${ODOO_VERSION:-17}
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - ..:/mnt/repo:ro
+    command:
+      - "-d"
+      - "test"
+      - "--db-filter=^test$$"
+      - "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/repo"
+      - "--log-level=warn"
+    ports:
+      - "8069:8069"
+
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.48.0-jammy
+    depends_on:
+      - odoo
+    working_dir: /work
+    environment:
+      BASE_URL: http://odoo:8069
+    volumes:
+      - ./playwright:/work
+    command: ["true"] # overridden by run.sh

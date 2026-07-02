@@ -2,7 +2,6 @@
 
 import { registry } from "@web/core/registry";
 import { CharField, charField } from "@web/views/fields/char/char_field";
-import { useService } from "@web/core/utils/hooks";
 import { useState } from "@odoo/owl";
 
 const DEBOUNCE_MS = 300;
@@ -19,7 +18,6 @@ export class AddressableAutocompleteField extends CharField {
 
     setup() {
         super.setup();
-        this.rpc = useService("rpc");
         this.state = useState({
             suggestions: [],
             open: false,
@@ -62,10 +60,22 @@ export class AddressableAutocompleteField extends CharField {
 
         let result;
         try {
-            result = await this.rpc("/addressable_autocomplete/suggest", {
-                query,
-                country_code: countryCode,
+            // Call the JSON controller with a plain fetch rather than the `rpc`
+            // service: the service's import path changed between Odoo 17 and 18,
+            // whereas fetch against the JSON-RPC route is version-independent.
+            // The session cookie is sent automatically (same origin); type=json
+            // routes are CSRF-exempt.
+            const response = await fetch("/addressable_autocomplete/suggest", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: "call",
+                    params: { query, country_code: countryCode },
+                }),
             });
+            const payload = await response.json();
+            result = payload.result || {};
         } catch {
             this.state.loading = false;
             this.state.suggestions = [];

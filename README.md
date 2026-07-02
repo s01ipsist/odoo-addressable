@@ -47,10 +47,23 @@ the browser** — the widget only ever talks to the in-Odoo proxy controller.
 
 ## Version support
 
-Targets **Odoo 17.0**. The JS uses the OWL fields framework and the `rpc`
-service. For 16.0 / 18.0 the field-registry and `rpc` import conventions differ
-slightly — maintain a branch per Odoo series (`17.0`, `18.0`, …), which is also
-how the Odoo Apps Store expects modules to be organised.
+End-to-end tested on **Odoo 17.0 and 18.0** (see [`test/`](test/)). The widget
+calls its JSON controller with `fetch` (not the version-specific `rpc` service)
+and the manifest uses a bare version that Odoo auto-prefixes per series, so a
+single tree installs and runs across series.
+
+For the Odoo Apps Store, cut a per-series branch and prefix the manifest version
+there (`17.0.1.0.0`, `18.0.1.0.0`), which is how the store organises modules.
+
+## Testing
+
+```bash
+cd test && ./run.sh 17     # or: ./run.sh 18
+```
+
+Dockerized Playwright suite that installs the module, points it at a mock API,
+and drives the real web client. See [`test/README.md`](test/README.md). CI runs
+the same suite across an Odoo-version matrix ([`.github/workflows/e2e.yml`](.github/workflows/e2e.yml)).
 
 ## License
 
@@ -58,6 +71,6 @@ LGPL-3. See [LICENSE](LICENSE).
 
 ## Status
 
-Scaffold — not yet tested against a live Odoo instance. See
-[CONTRIBUTING / testing notes](addressable_autocomplete/) before publishing to
-the Odoo Apps Store.
+Installs cleanly and passes the e2e suite on Odoo 17 & 18. Before an Apps Store
+upload: add `static/description/icon.png`, and wire the per-contact country code
+into the widget (currently always uses the configured default country).
