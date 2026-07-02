@@ -6,19 +6,28 @@
     # prefixes the running series. Bump this to cut a release. See
     # docs/releasing.md.
     "version": "1.0.0",
-    "summary": "Address autocomplete & verification for Australia, New Zealand, "
-               "Canada, the Nordics & Baltics, powered by Addressable",
+    "summary": "Address lookup, autocomplete, autofill & verification for "
+               "Australia, New Zealand, Canada, the Nordics & Baltics - a "
+               "Google Places alternative",
     "description": """
-Addressable Autocomplete
-========================
+Address Lookup & Autocomplete
+=============================
 
-Add fast, accurate address autocomplete to the street field on contacts,
-customers and vendors. As you type, Addressable suggests real, verified
-addresses and, on selection, fills in street, city, state, postcode and
-geo-coordinates for you.
+Add fast, accurate address lookup and autocomplete to the street field on
+contacts, customers and vendors. As you type, Addressable suggests real,
+verified addresses and, on selection, fills in street, suburb, city, state,
+postcode and geo-coordinates (latitude/longitude) for you.
 
-A privacy-friendly alternative to Google Places, with first-class coverage of
-Australia, New Zealand and the Nordics, built on open address data.
+Also known as: address lookup, address autocomplete, address autofill, address
+validation, address verification, address finder, address search, postcode and
+ZIP lookup, and geocoding. A privacy-friendly alternative to Google Places and
+other paid address-lookup services, built on open address data.
+
+Coverage
+--------
+
+Australia, New Zealand, Canada, Denmark, Sweden, Norway, Finland, Iceland,
+Estonia, the Faroe Islands and Greenland - with more countries added over time.
 
 Requirements
 ------------
