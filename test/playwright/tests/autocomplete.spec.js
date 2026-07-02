@@ -73,6 +73,43 @@ test("short queries do not open the dropdown", async ({ page }) => {
     ).toHaveCount(0);
 });
 
+test("keyboard navigation selects a suggestion", async ({ page }) => {
+    await login(page);
+    const street = await openNewContact(page);
+
+    await street.click();
+    await street.fill("71B Marua");
+    await expect(
+        page.locator(".o_addressable_dropdown .dropdown-item").first()
+    ).toBeVisible();
+
+    // Arrow down highlights the first option, Enter selects it.
+    await street.press("ArrowDown");
+    await expect(
+        page.locator(".o_addressable_dropdown .dropdown-item.active")
+    ).toContainText("Marua Road");
+    await street.press("Enter");
+
+    await expect(street).toHaveValue("71B Marua Road");
+    await expect(page.locator("[name='city'] input")).toHaveValue("Auckland");
+    // Dropdown closed after selection.
+    await expect(page.locator(".o_addressable_dropdown")).toHaveCount(0);
+});
+
+test("Escape closes the dropdown", async ({ page }) => {
+    await login(page);
+    const street = await openNewContact(page);
+
+    await street.click();
+    await street.fill("71B Marua");
+    await expect(
+        page.locator(".o_addressable_dropdown .dropdown-item").first()
+    ).toBeVisible();
+
+    await street.press("Escape");
+    await expect(page.locator(".o_addressable_dropdown")).toHaveCount(0);
+});
+
 test("search is scoped to the contact's existing country", async ({ page }) => {
     await login(page);
     const street = await openNewContact(page);

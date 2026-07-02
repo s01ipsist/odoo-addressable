@@ -11,6 +11,15 @@ with the Odoo series. See [docs/releasing.md](docs/releasing.md).
 
 ## [Unreleased]
 
+### Added
+- Keyboard navigation in the autocomplete dropdown: Up/Down to move, Enter to
+  select, Escape to close, with ARIA combobox/listbox roles for accessibility.
+
+### Changed
+- Hardened the lookup: the in-flight request is cancelled and stale responses
+  are ignored (race-safe, so a slow earlier reply can't overwrite a newer one),
+  results are cached per query+country, and queries are trimmed before searching.
+
 ## [1.1.1] - 2026-07-03
 
 ### Fixed

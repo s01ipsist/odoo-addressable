@@ -6,23 +6,31 @@
             <input
                 type="text"
                 class="o_input w-100"
+                role="combobox"
+                aria-autocomplete="list"
+                t-att-aria-expanded="state.open"
+                t-att-aria-controls="listboxId"
+                t-att-aria-activedescendant="state.activeIndex >= 0 ? (listboxId + '_' + state.activeIndex) : undefined"
                 t-att-id="props.id"
                 t-att-value="value"
-                t-att-placeholder="props.placeholder || 'Start typing an address…'"
+                t-att-placeholder="props.placeholder || 'Start typing an address...'"
                 t-att-readonly="props.readonly"
                 autocomplete="off"
                 t-on-input="onInput"
+                t-on-keydown="onKeydown"
                 t-on-blur="onBlur"
             />
             <div
                 t-if="state.open"
                 class="o_addressable_dropdown dropdown-menu show w-100"
+                role="listbox"
+                t-att-id="listboxId"
             >
                 <span
                     t-if="state.loading"
                     class="dropdown-item-text text-muted"
                 >
-                    Searching…
+                    Searching...
                 </span>
                 <span
                     t-if="!state.loading and !state.suggestions.length"
@@ -35,7 +43,11 @@
                     t-as="suggestion"
                     t-key="suggestion_index"
                     href="#"
-                    class="dropdown-item"
+                    role="option"
+                    t-att-id="listboxId + '_' + suggestion_index"
+                    t-att-aria-selected="suggestion_index === state.activeIndex"
+                    t-attf-class="dropdown-item{{ suggestion_index === state.activeIndex ? ' active' : '' }}"
+                    t-on-mouseenter="() => this.onHover(suggestion_index)"
                     t-on-mousedown.prevent="() => this.onSelectSuggestion(suggestion)"
                 >
                     <t t-esc="suggestion.label" />
