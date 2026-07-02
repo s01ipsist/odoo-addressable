@@ -5,7 +5,7 @@
     # upload branches are generated from main by tools/release.sh, which
     # prefixes the running series. Bump this to cut a release. See
     # docs/releasing.md.
-    "version": "1.1.0",
+    "version": "1.1.1",
     "summary": "Address lookup, autocomplete, autofill & verification for "
                "Australia, New Zealand, Canada, the Nordics & Baltics - a "
                "Google Places alternative",
