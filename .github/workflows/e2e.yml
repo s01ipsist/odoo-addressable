@@ -1,7 +1,10 @@
 name: e2e
 
 on:
+  # Only master + PRs — the per-series branches are byte-identical to master
+  # except the manifest version, so testing them would be redundant.
   push:
+    branches: [master]
   pull_request:
 
 jobs:

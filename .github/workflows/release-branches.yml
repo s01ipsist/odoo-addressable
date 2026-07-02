@@ -1,0 +1,30 @@
+name: release-branches
+
+# Keep the per-series Apps Store branches (17.0, 18.0, …) in sync with master.
+# They are generated (master + version prefix) and force-pushed, so you only
+# ever develop on master. See docs/releasing.md.
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-branches
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Regenerate & push series branches
+        run: PUSH=1 tools/release.sh
