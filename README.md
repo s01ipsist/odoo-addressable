@@ -5,6 +5,10 @@ address autocomplete and verification to Odoo. A privacy-friendly alternative to
 Google Places, with first-class coverage of Australia, New Zealand, Canada and
 the Nordics & Baltics, built on open address data.
 
+📦 **Available on the Odoo App Store:**
+[Addressable Autocomplete](https://apps.odoo.com/apps/modules/19.0/addressable_autocomplete)
+— install it directly from your Odoo instance.
+
 Coverage is field-driven and country-agnostic — see
 [docs/country-mapping.md](docs/country-mapping.md) for the per-country field
 mapping and what changes (usually nothing) when Addressable adds a country.

@@ -195,11 +195,14 @@ class AddressableController(http.Controller):
             "country_id": [country.id, country.display_name] if country else False,
         }
 
-        # partner_latitude / partner_longitude exist on res.partner in base.
-        lat, lon = result.get("lat"), result.get("lon")
-        if lat is not None:
-            values["partner_latitude"] = lat
-        if lon is not None:
-            values["partner_longitude"] = lon
+        # partner_latitude / partner_longitude are Float fields on res.partner
+        # (base). The API returns lat/lon as strings, so coerce to float.
+        for src, dest in (("lat", "partner_latitude"), ("lon", "partner_longitude")):
+            raw = result.get(src)
+            if raw not in (None, ""):
+                try:
+                    values[dest] = float(raw)
+                except (TypeError, ValueError):
+                    pass
 
         return {"label": formatted, "values": values}

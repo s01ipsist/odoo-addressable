@@ -11,6 +11,11 @@ with the Odoo series. See [docs/releasing.md](docs/releasing.md).
 
 ## [Unreleased]
 
+### Fixed
+- Coerce the API's `lat`/`lon` (returned as strings) to floats before writing
+  `partner_latitude` / `partner_longitude`, so geo-coordinates capture and
+  display correctly.
+
 ## [1.1.0] - 2026-07-03
 
 ### Added

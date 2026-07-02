@@ -7,13 +7,15 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 
+# Shapes mirror the real API, incl. lat/lon returned as STRINGS and a meshblock.
 DATA = {
     "nz": [
         {
             "street_number": "71B", "street": "Marua Road",
             "locality": "Ellerslie", "city": "Auckland", "region": "Auckland",
-            "postcode": "1051", "lat": -36.9, "lon": 174.8,
-            "formatted": "71B Marua Road, Ellerslie, Auckland 1051",
+            "postcode": "1051", "meshblock": "4006113",
+            "lon": "174.821423", "lat": "-36.891356",
+            "formatted": "71B Marua Road, Ellerslie, Auckland",
         }
     ],
     "au": [
@@ -21,7 +23,8 @@ DATA = {
             "building_name": "", "unit_details": "Unit 5",
             "street_number": "12", "street": "Collins Street",
             "locality": "Melbourne", "region": "Victoria", "postcode": "3000",
-            "lat": -37.8, "lon": 144.9,
+            "meshblock": "20603113000",
+            "lon": "144.966280", "lat": "-37.813807",
             "formatted": "5/12 Collins Street, Melbourne VIC 3000",
         }
     ],
@@ -31,7 +34,7 @@ DATA = {
             "street_number": "12", "street": "Storgatan",
             "locality": "Stockholm", "postcode": "111 51",
             "district": "Stockholms län", "municipality": "Stockholms kommun",
-            "lat": 59.33, "lon": 18.06,
+            "lon": "18.068581", "lat": "59.329323",
             "formatted": "Storgatan 12, 111 51 Stockholm",
         }
     ],

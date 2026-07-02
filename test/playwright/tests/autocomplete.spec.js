@@ -56,8 +56,8 @@ test("street autocomplete fills the address fields", async ({ page }) => {
     // Geo-coordinates are captured onto partner_latitude/longitude and persist
     // (the fields are in the view, so record.update() saves them). They're
     // read-only, so they render as text rather than <input>.
-    await expect(page.locator("[name='partner_latitude']")).toContainText("-36.9");
-    await expect(page.locator("[name='partner_longitude']")).toContainText("174.8");
+    await expect(page.locator("[name='partner_latitude']")).toContainText("-36.891356");
+    await expect(page.locator("[name='partner_longitude']")).toContainText("174.821423");
 });
 
 test("short queries do not open the dropdown", async ({ page }) => {
