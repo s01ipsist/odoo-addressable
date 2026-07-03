@@ -17,7 +17,7 @@ jobs:
         odoo-version: ["17", "18", "19"]
     name: Odoo ${{ matrix.odoo-version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Run end-to-end suite
         working-directory: test
