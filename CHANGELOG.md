@@ -11,6 +11,8 @@ with the Odoo series. See [docs/releasing.md](docs/releasing.md).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-07-03
+
 ### Added
 - Keyboard navigation in the autocomplete dropdown: Up/Down to move, Enter to
   select, Escape to close, with ARIA combobox/listbox roles for accessibility.
