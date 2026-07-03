@@ -13,10 +13,10 @@ test.beforeEach(async ({ page }) => {
     await page.goto("/web/login");
     await page.fill('input[name="login"]', "admin");
     await page.fill('input[name="password"]', "admin");
-    await Promise.all([
-        page.waitForLoadState("networkidle"),
-        page.click('button[type="submit"]'),
-    ]);
+    await page.click('button[type="submit"]');
+    // Not "networkidle" (Odoo keeps long-poll connections open); wait for the
+    // backend navbar instead.
+    await page.waitForSelector(".o_main_navbar", { timeout: 30000 });
 });
 
 test("screenshot: autocomplete dropdown", async ({ page }) => {

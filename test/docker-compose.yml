@@ -43,7 +43,9 @@ services:
       - "8069:8069"
 
   playwright:
-    image: mcr.microsoft.com/playwright:v1.48.0-jammy
+    # Tag is kept in lock-step with @playwright/test (package.json) by run.sh;
+    # the fallback is only used if PLAYWRIGHT_VERSION isn't exported.
+    image: mcr.microsoft.com/playwright:v${PLAYWRIGHT_VERSION:-1.61.1}-jammy
     depends_on:
       - odoo
     working_dir: /work
