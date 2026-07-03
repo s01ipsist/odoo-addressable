@@ -1,0 +1,44 @@
+version: 2
+
+updates:
+  # GitHub Actions used by the workflows (e.g. actions/checkout, upload-artifact).
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+    labels:
+      - dependencies
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Playwright end-to-end test dependencies.
+  - package-ecosystem: npm
+    directory: /test/playwright
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: test
+    labels:
+      - dependencies
+    groups:
+      playwright:
+        patterns:
+          - "*"
+
+  # Container images in the test stack (Postgres, Python, Playwright). The Odoo
+  # images are deliberately excluded — new Odoo series are handled by
+  # odoo-version-watch + the release process, not by Dependabot.
+  - package-ecosystem: docker
+    directory: /test
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: test
+    labels:
+      - dependencies
+    ignore:
+      - dependency-name: odoo
