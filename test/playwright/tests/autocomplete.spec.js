@@ -5,10 +5,11 @@ async function login(page) {
     await page.goto("/web/login");
     await page.fill('input[name="login"]', "admin");
     await page.fill('input[name="password"]', "admin");
-    await Promise.all([
-        page.waitForLoadState("networkidle"),
-        page.click('button[type="submit"]'),
-    ]);
+    await page.click('button[type="submit"]');
+    // Wait for the backend to load. Not "networkidle" — Odoo keeps bus/long-poll
+    // connections open, so the network is never idle (and Playwright discourages
+    // it). The main navbar is a reliable post-login signal.
+    await page.waitForSelector(".o_main_navbar", { timeout: 30000 });
 }
 
 /**

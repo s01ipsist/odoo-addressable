@@ -8,13 +8,19 @@
 #     ./run.sh 18         # Odoo 18
 #     ODOO_VERSION=18 ./run.sh
 #
-# Requires: docker (with compose v2). No host Node/Python needed.
+# Requires: docker (compose v2) and python3 (to read the Playwright version).
 set -euo pipefail
 cd "$(dirname "$0")"
 
 export ODOO_VERSION="${1:-${ODOO_VERSION:-17}}"
 DB=test
 DC="docker compose"
+
+# Keep the Playwright container image in lock-step with the @playwright/test
+# version in package.json. Dependabot only bumps the npm dep; the runner and the
+# image's bundled browsers must match, so derive the tag from the single source.
+export PLAYWRIGHT_VERSION="$(python3 -c "import json,re; v=json.load(open('playwright/package.json'))['devDependencies']['@playwright/test']; print(re.sub(r'^[^0-9]*','',v))")"
+echo "== Playwright ${PLAYWRIGHT_VERSION} =="
 
 echo "== Odoo ${ODOO_VERSION} e2e =="
 
