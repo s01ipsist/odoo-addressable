@@ -1,0 +1,90 @@
+name: odoo-version-watch
+
+# Weekly check for Odoo series we don't yet test. For each newly-available major
+# it runs the full e2e suite and opens an issue saying whether the module:
+#   - PASSES  -> just add it to the matrix + release process (no code changes)
+#   - FAILS   -> needs code changes (logs attached to the run)
+# This turns "a new Odoo came out" into an actionable, pre-triaged signal.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch: # allow manual runs
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: odoo-version-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect series newer than we test
+        id: detect
+        run: |
+          set -euo pipefail
+          # Highest series we currently support (source of truth: release.sh).
+          tested_max=$(grep -oE '"[0-9]+\.0"' tools/release.sh \
+            | sed -E 's/"([0-9]+)\.0"/\1/' | sort -n | tail -1)
+          echo "Highest tested series: ${tested_max}.0"
+
+          # Numeric major tags published for the official odoo image.
+          avail=$(curl -fsSL "https://hub.docker.com/v2/repositories/library/odoo/tags/?page_size=100" \
+            | python3 -c "import sys,json; print('\n'.join(t['name'] for t in json.load(sys.stdin)['results']))" \
+            | grep -oE '^[0-9]+$' | sort -n | uniq)
+          echo "Available majors: $(echo $avail | tr '\n' ' ')"
+
+          new=$(echo "$avail" | awk -v m="$tested_max" '$1 > m')
+          echo "New majors: $(echo $new | tr '\n' ' ')"
+          {
+            echo "new<<EOF"
+            echo "$new"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Test each new series and report
+        if: steps.detect.outputs.new != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -uo pipefail
+          while read -r major; do
+            [ -z "$major" ] && continue
+            title="Odoo ${major}.0: version watch"
+
+            # Skip if we already opened an issue for this series.
+            if gh issue list --state open --json title --jq '.[].title' | grep -Fxq "$title"; then
+              echo "Issue already open: $title"; continue
+            fi
+
+            echo "::group::e2e against Odoo ${major}"
+            if test/run.sh "$major"; then verdict="PASS"; else verdict="FAIL"; fi
+            echo "::endgroup::"
+
+            if [ "$verdict" = "PASS" ]; then
+              body=$(printf '%s\n' \
+                "Odoo **${major}** is now available and the module's e2e suite **passes** against it." \
+                "" \
+                "No code changes appear to be needed. To support it:" \
+                "1. Add \`\"${major}\"\` to the matrix in \`.github/workflows/e2e.yml\`." \
+                "2. Add \`\"${major}.0\"\` to \`SERIES\` in \`tools/release.sh\`." \
+                "3. Push to main — the \`${major}.0\` upload branch is created automatically." \
+                "" \
+                "See docs/releasing.md. Run: ${RUN_URL}")
+            else
+              body=$(printf '%s\n' \
+                "Odoo **${major}** is available but the module's e2e suite **fails** against it — it likely needs code changes." \
+                "" \
+                "Review the failing run (screenshots/traces are uploaded as artifacts), then fix on main. Prefer runtime detection over forking a branch." \
+                "" \
+                "See docs/releasing.md. Run: ${RUN_URL}")
+            fi
+            printf '%s' "$body" | gh issue create --title "$title" --body-file -
+          done <<< "${{ steps.detect.outputs.new }}"

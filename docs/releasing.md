@@ -40,6 +40,28 @@ tools/release.sh --push   # …and force-push them
 4. In the Apps Store, each series listing points at the repo + its branch and
    picks up the new version.
 
+## Monitoring for new Odoo versions
+
+`.github/workflows/odoo-version-watch.yml` runs **weekly** (and on demand). It:
+
+1. reads the highest series we test from `tools/release.sh`,
+2. checks the official `odoo` Docker image for any newer major, and
+3. for each new one, runs the full e2e suite and opens a GitHub issue saying
+   whether the module **passes** (just add it — no code changes) or **fails**
+   (needs code changes; the run's logs/artifacts show what broke).
+
+So "a new Odoo was released" arrives as a pre-triaged, actionable issue rather
+than something to remember to check. Trigger it manually any time from the
+Actions tab (**Run workflow**).
+
+Complementary signals worth a human glance:
+- Odoo's [supported-versions page](https://www.odoo.com/documentation/19.0/administration/standard_extended_support.html)
+  (majors ship ~annually, around October).
+- The `odoo/odoo` GitHub repo gains the new series branch months before release —
+  useful for early warning (the Docker image only appears near GA).
+- Optionally, a Docker-tag tracker (e.g. Renovate watching `library/odoo`) can
+  open PRs when new tags land.
+
 ## Adding a new Odoo series (e.g. 20.0)
 
 1. Add `"20"` to the matrix in `.github/workflows/e2e.yml` and run
@@ -48,7 +70,8 @@ tools/release.sh --push   # …and force-push them
 2. Add `"20.0"` to `SERIES` in `tools/release.sh`.
 3. Push `main`. The `20.0` branch is created automatically.
 
-That's it — two one-line edits.
+That's it — two one-line edits (the version-watch picks up the new max
+automatically).
 
 ## If a series ever needs different *code*
 
