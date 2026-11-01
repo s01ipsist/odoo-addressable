@@ -6,6 +6,11 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Actions are pinned to full semver tags and locked in
+    # .github/workflows/actions.lock (Dependabot regenerates it in the same PR).
+    # Let fresh releases settle before we pin to them.
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: ci
     labels:
